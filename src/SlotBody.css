@@ -1,0 +1,29 @@
+.slotBody {
+    display: flex; 
+    justify-content: center;
+    gap: 10px; 
+    padding: 10px;
+    background-color: #4050F0;
+}
+.slotBody img {
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover; 
+    border: 2px solid #ccc; 
+    border-radius: 5px;
+}
+.slotButtons {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-evenly; 
+    gap: 10px; 
+}
+
+.slotButtons button {
+    background-color: #0c8f5f;
+    border: none;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+}
