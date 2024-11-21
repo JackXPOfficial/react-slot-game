@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import "./SlotBody.css";
+
 import img1 from "./assets/1.jpg";
 import img2 from "./assets/2.jpg";
 import img3 from "./assets/3.jpg";
 import img4 from "./assets/4.jpg";
+import slotAudio from './assets/slots_audio.mp3';
+import winningAudio from './assets/winning_sound.mp3'
 
 function SlotBody() {
     const [slot1, setSlot1] = useState(img1);
@@ -18,9 +21,16 @@ function SlotBody() {
 
     const images = [img1, img2, img3, img4];
 
-    var audio = new Audio('./assets/slot_sound.mp3');
+
+    var audio = new Audio(slotAudio);
+    var winAudio = new Audio(winningAudio);
 
     
+    useEffect(() => {
+        audio.load();
+        winAudio.load();
+    }, []);
+
     //Start Programm if "Space" is pressed
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -62,15 +72,16 @@ function SlotBody() {
         }
         return 0;
     };
-
     //run Slot game
     const runSlots = () => {
         removeDisplayWin();
-        if (bank <= 0 || gamesRunning) return;
-        audio.load();
-        audio.play();
+        if(bank <= 0 || gamesRunning) return;
+        
         setGamesRunning(true);
         setBank((prevBank) => prevBank - stake);
+        
+        audio.currentTime = 0;
+        audio.play().catch((error) => console.error("Audio playback failed:", error));
 
         const animationInterval = 100; // Interval in milliseconds for each slot cycle
         const animationDuration = 1500; // Total duration in milliseconds
@@ -94,15 +105,19 @@ function SlotBody() {
         setSlot3(finalSlot3);
 
         setGamesRunning(false);
+        
         audio.pause();
+        
         checkForWin(finalSlot1, finalSlot2, finalSlot3);
         }, animationDuration);
+        
     };
 
     const checkForWin = (finalSlot1, finalSlot2, finalSlot3) => {
         if (finalSlot1 === finalSlot2 && finalSlot1 === finalSlot3) {
-        setBank((prevBank) => prevBank + stake * 5);
-        displayWin(stake * 5);
+            winAudio.play();
+            setBank((prevBank) => prevBank + stake * 5);
+            displayWin(stake * 5);
         }
     };
 
@@ -113,7 +128,7 @@ function SlotBody() {
     const removeDisplayWin = () => {
         setWin(null);
     };
-
+    
   
   
     return (
@@ -133,7 +148,8 @@ function SlotBody() {
             <button onClick={runSlots}>Spielen</button>
         </div>
         <div className="slotFooter">
-            <p>{win}</p>
+            {win}
+
         </div>
         </>
     );
